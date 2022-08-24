@@ -22,7 +22,7 @@ func NewOrderCreatedListener(hub *rmq.Hub) *orderCreated {
 
 func (ev *orderCreated) Listen(ctx context.Context) {
 	consumer := listeners.StartConsumer(ctx, ev.hub, event.OrderCreated)
-	go ev.handleMessages(ctx, consumer, fmt.Sprintf("order[%s]", event.OrderCreated))
+	ev.handleMessages(ctx, consumer, fmt.Sprintf("order[%s]", event.OrderCreated))
 }
 
 func (ev *orderCreated) handleMessages(ctx context.Context, cons *rmq.Consumer, name string) {
