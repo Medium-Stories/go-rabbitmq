@@ -5,6 +5,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// listen for order paid and order shipped and update order status accordingly
+
 type service struct {
 	repo Repository
 	pub  event.Publisher
@@ -20,6 +22,7 @@ func NewService(repo Repository, pub event.Publisher) *service {
 type Repository interface {
 	Save(bucket *Bucket) error
 	GetByIdentifier(identifier string) *Bucket
+	UpdateStatus(identifier string, status int) error
 }
 
 func (svc *service) Create(bucket *Bucket) error {

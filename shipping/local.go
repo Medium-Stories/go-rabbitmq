@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+// listen for order paid event and begin shipping process
+
 type local struct {
 	pub event.Publisher
 }
