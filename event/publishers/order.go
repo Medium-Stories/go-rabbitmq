@@ -47,7 +47,6 @@ func (pub *orderPublisher) setupEvents(ctx context.Context, events []string) {
 		conf.Exchange = event.WooHooStoreBus
 		conf.Queue = ev
 		conf.RoutingKey = ev
-		conf.ExchangeKind = "topic"
 
 		if err := pub.hub.CreateQueue(conf); err != nil {
 			logrus.Fatal(err)
