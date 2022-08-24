@@ -1,26 +1,36 @@
 version: "3.8"
 
 services:
-  order:
-    image: semirm/go-rabbitmq-order:1
-    build:
-      context: .
-      dockerfile: cmd/order/Dockerfile
-    container_name: medium_order
-    ports:
-      - "8001:8001"
-    networks:
-      - medium
   gateway:
     image: semirm/go-rabbitmq-gateway:1
     build:
       context: .
       dockerfile: cmd/gateway/Dockerfile
     container_name: medium_gateway
+    command:
+      - -rmq_host=rabbitmq
     ports:
       - "8000:8000"
-    depends_on:
-      - order
+    networks:
+      - medium
+  order:
+    image: semirm/go-rabbitmq-order:1
+    build:
+      context: .
+      dockerfile: cmd/order/Dockerfile
+    container_name: medium_order
+    command:
+      - -rmq_host=rabbitmq
+    networks:
+      - medium
+  shipping:
+    image: semirm/go-rabbitmq-shipping:1
+    build:
+      context: .
+      dockerfile: cmd/shipping/Dockerfile
+    container_name: medium_shipping
+    command:
+      - -rmq_host=rabbitmq
     networks:
       - medium
   rabbitmq:

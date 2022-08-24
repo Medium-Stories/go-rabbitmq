@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// listen for events: order paid, and begin shipping process
+// listen for event: order paid, and begin shipping process
 
 type local struct {
 	pub event.Publisher

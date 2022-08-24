@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/medium-stories/go-rabbitmq/cmd/gateway/publisher"
-	"github.com/medium-stories/go-rabbitmq/cmd/gateway/repository"
+	"github.com/gobackpack/rmq"
+	"github.com/medium-stories/go-rabbitmq/event/publishers"
 	"github.com/medium-stories/go-rabbitmq/internal/web"
 	"github.com/medium-stories/go-rabbitmq/order"
+	"github.com/medium-stories/go-rabbitmq/order/repository"
 	"github.com/medium-stories/go-rabbitmq/payment"
 	"github.com/sirupsen/logrus"
 	"net/http"
@@ -15,15 +17,28 @@ import (
 
 var (
 	httpAddr = flag.String("http", ":8000", "Http address")
+	rmqHost  = flag.String("rmq_host", "localhost", "RabbitMQ host address")
 )
 
 func main() {
 	flag.Parse()
 
+	cred := rmq.NewCredentials()
+	cred.Host = *rmqHost
+	hub := rmq.NewHub(cred)
+
+	hubCtx, hubCancel := context.WithCancel(context.Background())
+	defer hubCancel()
+
+	_, err := hub.Connect(hubCtx)
+	if err != nil {
+		logrus.Fatal(err)
+	}
+
 	router := web.NewRouter()
 
-	orderApi := order.NewApi(order.NewService(repository.NewInMemory(), publisher.NewMocked()))
-	paymentGateway := payment.NewPaymentGateway(publisher.NewMocked())
+	orderApi := order.NewApi(order.NewService(repository.NewInMemory(), publishers.NewOrderPublisher(hubCtx, hub)))
+	paymentGateway := payment.NewPaymentGateway(publishers.NewOrderPublisher(hubCtx, hub))
 
 	router.POST("order", orderApi.CreateHandler())
 	router.GET("order/:identifier", orderApi.GetHandler())

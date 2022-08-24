@@ -6,8 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// listen for events: order paid and order shipped, and update order status accordingly
-
 type service struct {
 	repo Repository
 	pub  event.Publisher
