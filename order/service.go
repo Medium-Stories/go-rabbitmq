@@ -27,8 +27,8 @@ func (svc *service) Create(bucket *Bucket) error {
 		return err
 	}
 
-	go func(oId string) {
-		if err := svc.pub.Publish(event.OrderCreated, oId); err != nil {
+	go func(identifier string) {
+		if err := svc.pub.Publish(event.OrderCreated, identifier); err != nil {
 			logrus.Error(err)
 		}
 	}(bucket.Identifier)

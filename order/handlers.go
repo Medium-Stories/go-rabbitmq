@@ -20,17 +20,17 @@ func NewApi(svc *service) *api {
 
 func (api *api) CreateHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		orderId := uuid.NewString()
+		identifier := uuid.NewString()
 
 		if err := api.svc.Create(&Bucket{
-			Identifier: orderId,
+			Identifier: identifier,
 		}); err != nil {
 			logrus.Error(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		c.JSON(http.StatusOK, fmt.Sprintf("order created: %s", orderId))
+		c.JSON(http.StatusOK, fmt.Sprintf("order created: %s", identifier))
 	}
 }
 

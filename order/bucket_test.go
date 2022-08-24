@@ -11,7 +11,7 @@ func TestBucket_Add(t *testing.T) {
 	assert.Equal(t, 0, len(bucket.Items))
 
 	bucket.Add(&order.Item{
-		Id: 1,
+		Sku: "item1",
 	})
 
 	assert.Equal(t, 1, len(bucket.Items))
@@ -26,13 +26,13 @@ func TestBucket_Remove(t *testing.T) {
 			bucket: &order.Bucket{
 				Items: []*order.Item{
 					{
-						Id: 1,
+						Sku: "item1",
 					},
 					{
-						Id: 2,
+						Sku: "item2",
 					},
 					{
-						Id: 3,
+						Sku: "item3",
 					},
 				},
 			},
@@ -42,14 +42,14 @@ func TestBucket_Remove(t *testing.T) {
 
 	for name, suite := range table {
 		t.Run(name, func(t *testing.T) {
-			suite.bucket.Remove(2)
+			suite.bucket.Remove("item2")
 			assert.Equal(t, suite.expectedLength, len(suite.bucket.Items))
 
 			item1 := suite.bucket.Items[0]
-			assert.Equal(t, 1, item1.Id)
+			assert.Equal(t, "item1", item1.Sku)
 
 			item2 := suite.bucket.Items[1]
-			assert.Equal(t, 3, item2.Id)
+			assert.Equal(t, "item3", item2.Sku)
 		})
 	}
 }
