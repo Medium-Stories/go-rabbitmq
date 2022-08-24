@@ -21,6 +21,6 @@ type Listener interface {
 
 func Listen(ctx context.Context, listeners ...Listener) {
 	for _, listener := range listeners {
-		listener.Listen(ctx)
+		go listener.Listen(ctx)
 	}
 }
