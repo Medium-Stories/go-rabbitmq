@@ -17,8 +17,6 @@ services:
       context: .
       dockerfile: cmd/gateway/Dockerfile
     container_name: medium_gateway
-    command:
-      - -order_uri=medium_order:8001
     ports:
       - "8000:8000"
     depends_on:

@@ -19,6 +19,7 @@ func NewService(repo Repository, pub event.Publisher) *service {
 
 type Repository interface {
 	Save(bucket *Bucket) error
+	GetByIdentifier(identifier string) *Bucket
 }
 
 func (svc *service) Create(bucket *Bucket) error {
@@ -33,4 +34,8 @@ func (svc *service) Create(bucket *Bucket) error {
 	}(bucket.Identifier)
 
 	return nil
+}
+
+func (svc *service) CheckStatus(identifier string) *Bucket {
+	return svc.repo.GetByIdentifier(identifier)
 }
