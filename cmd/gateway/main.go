@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gobackpack/rmq"
-	orderPublisher "github.com/medium-stories/go-rabbitmq/event/publishers/order"
+	"github.com/medium-stories/go-rabbitmq/event/publishers"
 	"github.com/medium-stories/go-rabbitmq/internal/web"
 	"github.com/medium-stories/go-rabbitmq/order"
 	"github.com/medium-stories/go-rabbitmq/order/repository"
@@ -37,7 +37,7 @@ func main() {
 
 	router := web.NewRouter()
 
-	pub := orderPublisher.NewOrderPublisher(hubCtx, hub)
+	pub := publishers.NewOrderPublisher(hubCtx, hub)
 	orderApi := order.NewApi(order.NewService(repository.NewInMemory(), pub))
 	paymentGateway := payment.NewPaymentGateway(pub)
 

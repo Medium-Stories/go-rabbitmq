@@ -6,20 +6,23 @@ import (
 	"github.com/gobackpack/rmq"
 	"github.com/medium-stories/go-rabbitmq/event"
 	"github.com/medium-stories/go-rabbitmq/event/listeners"
-	"github.com/medium-stories/go-rabbitmq/order"
 	"github.com/sirupsen/logrus"
 	"time"
 )
 
 type orderPaid struct {
-	hub  *rmq.Hub
-	repo order.Repository
+	hub    *rmq.Hub
+	method Method
 }
 
-func NewOrderPaidListener(hub *rmq.Hub, repo order.Repository) *orderPaid {
+type Method interface {
+	Ship(orderId string) error
+}
+
+func NewOrderPaidListener(hub *rmq.Hub, method Method) *orderPaid {
 	return &orderPaid{
-		hub:  hub,
-		repo: repo,
+		hub:    hub,
+		method: method,
 	}
 }
 
@@ -37,6 +40,10 @@ func (ev *orderPaid) handleMessages(ctx context.Context, cons *rmq.Consumer, nam
 		select {
 		case msg := <-cons.OnMessage:
 			logrus.Infof("[%s] %s - %s", time.Now().UTC(), name, msg)
+
+			if err := ev.method.Ship(string(msg)); err != nil {
+				logrus.Error(err)
+			}
 		case err := <-cons.OnError:
 			logrus.Error(err)
 		case <-ctx.Done():

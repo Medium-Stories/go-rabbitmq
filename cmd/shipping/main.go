@@ -5,8 +5,9 @@ import (
 	"flag"
 	"github.com/gobackpack/rmq"
 	"github.com/medium-stories/go-rabbitmq/event"
-	"github.com/medium-stories/go-rabbitmq/event/listeners/shipping"
-	"github.com/medium-stories/go-rabbitmq/order/repository"
+	listeners "github.com/medium-stories/go-rabbitmq/event/listeners/shipping"
+	"github.com/medium-stories/go-rabbitmq/event/publishers"
+	"github.com/medium-stories/go-rabbitmq/shipping"
 	"github.com/sirupsen/logrus"
 	"os"
 	"os/signal"
@@ -30,7 +31,8 @@ func main() {
 		logrus.Fatal(err)
 	}
 
-	orderPaid := shipping.NewOrderPaidListener(hub, repository.NewInMemory())
+	pub := publishers.NewOrderPublisher(hubCtx, hub)
+	orderPaid := listeners.NewOrderPaidListener(hub, shipping.NewShippingMethod(pub))
 
 	event.Listen(hubCtx, orderPaid)
 
