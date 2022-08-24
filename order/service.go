@@ -1,6 +1,7 @@
 package order
 
 import (
+	"github.com/google/uuid"
 	"github.com/medium-stories/go-rabbitmq/event"
 	"github.com/sirupsen/logrus"
 )
@@ -26,6 +27,8 @@ type Repository interface {
 }
 
 func (svc *service) Create(bucket *Bucket) error {
+	bucket.Identifier = uuid.NewString()
+
 	if err := svc.repo.Save(bucket); err != nil {
 		return err
 	}

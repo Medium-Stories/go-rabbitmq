@@ -1,9 +1,7 @@
 package order
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
@@ -20,17 +18,15 @@ func NewApi(svc *service) *api {
 
 func (api *api) CreateHandler() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		identifier := uuid.NewString()
+		bucket := &Bucket{}
 
-		if err := api.svc.Create(&Bucket{
-			Identifier: identifier,
-		}); err != nil {
+		if err := api.svc.Create(bucket); err != nil {
 			logrus.Error(err)
 			c.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
 
-		c.JSON(http.StatusOK, fmt.Sprintf("order created: %s", identifier))
+		c.JSON(http.StatusOK, bucket.Identifier)
 	}
 }
 
