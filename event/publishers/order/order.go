@@ -1,4 +1,4 @@
-package publishers
+package order
 
 import (
 	"context"
@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/gobackpack/rmq"
 	"github.com/medium-stories/go-rabbitmq/event"
-	"github.com/sirupsen/logrus"
 )
 
 type orderPublisher struct {
@@ -45,12 +44,8 @@ func (pub *orderPublisher) setupEvents(ctx context.Context, events []string) {
 	for _, ev := range events {
 		conf := rmq.NewConfig()
 		conf.Exchange = event.WooHooStoreBus
-		conf.Queue = ev
 		conf.RoutingKey = ev
-
-		if err := pub.hub.CreateQueue(conf); err != nil {
-			logrus.Fatal(err)
-		}
+		conf.ExchangeKind = "topic"
 
 		pub.conf[ev] = pub.hub.CreatePublisher(ctx, conf)
 	}

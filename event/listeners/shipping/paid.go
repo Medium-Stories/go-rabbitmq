@@ -24,7 +24,7 @@ func NewOrderPaidListener(hub *rmq.Hub, repo order.Repository) *orderPaid {
 }
 
 func (ev *orderPaid) Listen(ctx context.Context) {
-	consumer := listeners.StartConsumer(ctx, ev.hub, event.OrderPaid)
+	consumer := listeners.StartConsumer(ctx, ev.hub, "shipping", event.OrderPaid)
 	ev.handleMessages(ctx, consumer, fmt.Sprintf("shipping[%s]", event.OrderPaid))
 }
 

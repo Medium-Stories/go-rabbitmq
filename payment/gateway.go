@@ -3,7 +3,6 @@ package payment
 import (
 	"github.com/medium-stories/go-rabbitmq/event"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 type gateway struct {
@@ -17,7 +16,6 @@ func NewPaymentGateway(pub event.Publisher) *gateway {
 }
 
 func (gtw *gateway) Pay(orderId string) error {
-	time.Sleep(1 * time.Second)
 	logrus.Infof("payment for order id: %s completed", orderId)
 
 	go func(oId string) {
