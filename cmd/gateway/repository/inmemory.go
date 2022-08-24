@@ -25,7 +25,7 @@ func (repo *inmemory) GetByIdentifier(identifier string) *order.Bucket {
 	return nil
 }
 
-func (repo *inmemory) UpdateStatus(identifier string, status int) *order.Bucket {
+func (repo *inmemory) UpdateStatus(identifier string, status int) error {
 	for _, o := range repo.orders {
 		if o.Identifier == identifier {
 			o.OrderStatus = status

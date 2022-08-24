@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-// listen for order paid event and begin shipping process
+// listen for events: order paid, and begin shipping process
 
 type local struct {
 	pub event.Publisher
@@ -19,7 +19,7 @@ func NewShippingMethod(pub event.Publisher) *local {
 }
 
 func (loc *local) Ship(orderId string) error {
-	time.Sleep(2 * time.Second)
+	time.Sleep(1 * time.Second)
 	logrus.Infof("order id: %s shipped", orderId)
 
 	go func(oId string) {

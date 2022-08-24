@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// listen for order paid and order shipped and update order status accordingly
+// listen for events: order paid and order shipped, and update order status accordingly
 
 type service struct {
 	repo Repository
