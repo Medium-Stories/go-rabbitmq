@@ -3,6 +3,7 @@ package shipping
 import (
 	"github.com/medium-stories/go-rabbitmq/event"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type local struct {
@@ -16,6 +17,7 @@ func NewShippingMethod(pub event.Publisher) *local {
 }
 
 func (loc *local) Ship(orderId string) error {
+	time.Sleep(2 * time.Second)
 	logrus.Infof("order id: %s shipped", orderId)
 
 	go func(oId string) {
