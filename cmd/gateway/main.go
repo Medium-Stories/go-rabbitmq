@@ -38,7 +38,7 @@ func main() {
 	router := web.NewRouter()
 
 	pub := publishers.NewOrderPublisher(hubCtx, hub)
-	orderApi := order.NewApi(order.NewService(repository.NewInMemory(), pub))
+	orderApi := order.NewApi(order.NewService(repository.NewSqlite("woohoo_orders"), pub))
 	paymentGateway := payment.NewPaymentGateway(pub)
 
 	router.POST("order", orderApi.CreateHandler())

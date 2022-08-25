@@ -2,6 +2,7 @@ package order
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/gobackpack/rmq"
 	"github.com/medium-stories/go-rabbitmq/event"
@@ -38,7 +39,10 @@ func (ev *orderShipped) handleMessages(ctx context.Context, cons *rmq.Consumer, 
 		case msg := <-cons.OnMessage:
 			logrus.Infof("[%s] %s - %s", time.Now().UTC(), name, msg)
 
-			if err := ev.repo.UpdateStatus(string(msg), order.StatusShipped); err != nil {
+			var identifier string
+			json.Unmarshal(msg, &identifier)
+
+			if err := ev.repo.UpdateStatus(identifier, order.StatusShipped); err != nil {
 				logrus.Error(err)
 			}
 		case err := <-cons.OnError:

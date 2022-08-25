@@ -31,8 +31,8 @@ func main() {
 	}
 
 	orderCreated := listeners.NewOrderCreatedListener(hub)
-	orderPaid := listeners.NewOrderPaidListener(hub, repository.NewInMemory())
-	orderShipped := listeners.NewOrderShippedListener(hub, repository.NewInMemory())
+	orderPaid := listeners.NewOrderPaidListener(hub, repository.NewSqlite("woohoo_orders"))
+	orderShipped := listeners.NewOrderShippedListener(hub, repository.NewSqlite("woohoo_orders"))
 
 	event.Listen(hubCtx, orderCreated, orderPaid, orderShipped)
 
