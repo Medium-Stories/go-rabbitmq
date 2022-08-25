@@ -6,6 +6,12 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const (
+	StatusCreated = 0
+	StatusPaid    = 1
+	StatusShipped = 2
+)
+
 type service struct {
 	repo Repository
 	pub  event.Publisher
@@ -25,6 +31,7 @@ type Repository interface {
 }
 
 func (svc *service) Create(bucket *Bucket) error {
+	bucket.OrderStatus = StatusCreated
 	bucket.Identifier = uuid.NewString()
 
 	if err := svc.repo.Save(bucket); err != nil {

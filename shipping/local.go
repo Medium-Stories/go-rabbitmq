@@ -5,8 +5,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// listen for event: order paid, and begin shipping process
-
 type local struct {
 	pub event.Publisher
 }

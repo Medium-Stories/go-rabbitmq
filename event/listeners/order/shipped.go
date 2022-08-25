@@ -37,6 +37,10 @@ func (ev *orderShipped) handleMessages(ctx context.Context, cons *rmq.Consumer, 
 		select {
 		case msg := <-cons.OnMessage:
 			logrus.Infof("[%s] %s - %s", time.Now().UTC(), name, msg)
+
+			if err := ev.repo.UpdateStatus(string(msg), order.StatusShipped); err != nil {
+				logrus.Error(err)
+			}
 		case err := <-cons.OnError:
 			logrus.Error(err)
 		case <-ctx.Done():
