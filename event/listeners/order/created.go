@@ -2,12 +2,11 @@ package order
 
 import (
 	"context"
-	"fmt"
+	"encoding/json"
 	"github.com/gobackpack/rmq"
 	"github.com/medium-stories/go-rabbitmq/event"
 	"github.com/medium-stories/go-rabbitmq/event/listeners"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 type orderCreated struct {
@@ -22,7 +21,7 @@ func NewOrderCreatedListener(hub *rmq.Hub) *orderCreated {
 
 func (ev *orderCreated) Listen(ctx context.Context) {
 	consumer := listeners.StartConsumer(ctx, ev.hub, "order", event.OrderCreated)
-	ev.handleMessages(ctx, consumer, fmt.Sprintf("order[%s]", event.OrderCreated))
+	ev.handleMessages(ctx, consumer, event.OrderCreated)
 }
 
 func (ev *orderCreated) handleMessages(ctx context.Context, cons *rmq.Consumer, name string) {
@@ -33,7 +32,10 @@ func (ev *orderCreated) handleMessages(ctx context.Context, cons *rmq.Consumer, 
 	for {
 		select {
 		case msg := <-cons.OnMessage:
-			logrus.Infof("[%s] %s - %s", time.Now().UTC(), name, msg)
+			var identifier string
+			json.Unmarshal(msg, &identifier)
+
+			logrus.Infof("[%s] - %s", name, identifier)
 		case err := <-cons.OnError:
 			logrus.Error(err)
 		case <-ctx.Done():

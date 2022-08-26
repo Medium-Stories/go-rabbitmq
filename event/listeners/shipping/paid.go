@@ -3,12 +3,10 @@ package shipping
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"github.com/gobackpack/rmq"
 	"github.com/medium-stories/go-rabbitmq/event"
 	"github.com/medium-stories/go-rabbitmq/event/listeners"
 	"github.com/sirupsen/logrus"
-	"time"
 )
 
 type orderPaid struct {
@@ -29,7 +27,7 @@ func NewOrderPaidListener(hub *rmq.Hub, method Method) *orderPaid {
 
 func (ev *orderPaid) Listen(ctx context.Context) {
 	consumer := listeners.StartConsumer(ctx, ev.hub, "shipping", event.OrderPaid)
-	ev.handleMessages(ctx, consumer, fmt.Sprintf("shipping[%s]", event.OrderPaid))
+	ev.handleMessages(ctx, consumer, event.OrderPaid)
 }
 
 func (ev *orderPaid) handleMessages(ctx context.Context, cons *rmq.Consumer, name string) {
@@ -40,10 +38,10 @@ func (ev *orderPaid) handleMessages(ctx context.Context, cons *rmq.Consumer, nam
 	for {
 		select {
 		case msg := <-cons.OnMessage:
-			logrus.Infof("[%s] %s - %s", time.Now().UTC(), name, msg)
-
 			var identifier string
 			json.Unmarshal(msg, &identifier)
+
+			logrus.Infof("[%s] - %s", name, identifier)
 
 			if err := ev.method.Ship(identifier); err != nil {
 				logrus.Error(err)

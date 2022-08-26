@@ -1,5 +1,7 @@
 # build app
-FROM golang:1.17.8-alpine3.15 as base_build
+FROM golang:1.19-alpine3.16 as base_build
+
+RUN apk add gcc libc-dev libffi-dev
 
 WORKDIR /app
 

@@ -13,7 +13,10 @@ import (
 	"syscall"
 )
 
-var rmqHost = flag.String("rmq_host", "localhost", "RabbitMQ host address")
+var (
+	rmqHost = flag.String("rmq_host", "localhost", "RabbitMQ host address")
+	dbPath  = flag.String("db_path", "db/woohoo_orders.db", "Sqlite db path")
+)
 
 func main() {
 	flag.Parse()
@@ -31,8 +34,8 @@ func main() {
 	}
 
 	orderCreated := listeners.NewOrderCreatedListener(hub)
-	orderPaid := listeners.NewOrderPaidListener(hub, repository.NewSqlite("woohoo_orders"))
-	orderShipped := listeners.NewOrderShippedListener(hub, repository.NewSqlite("woohoo_orders"))
+	orderPaid := listeners.NewOrderPaidListener(hub, repository.NewSqlite(*dbPath))
+	orderShipped := listeners.NewOrderShippedListener(hub, repository.NewSqlite(*dbPath))
 
 	event.Listen(hubCtx, orderCreated, orderPaid, orderShipped)
 

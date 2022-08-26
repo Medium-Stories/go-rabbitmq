@@ -18,6 +18,7 @@ import (
 var (
 	httpAddr = flag.String("http", ":8000", "Http address")
 	rmqHost  = flag.String("rmq_host", "localhost", "RabbitMQ host address")
+	dbPath   = flag.String("db_path", "db/woohoo_orders.db", "Sqlite db path")
 )
 
 func main() {
@@ -38,7 +39,7 @@ func main() {
 	router := web.NewRouter()
 
 	pub := publishers.NewOrderPublisher(hubCtx, hub)
-	orderApi := order.NewApi(order.NewService(repository.NewSqlite("woohoo_orders"), pub))
+	orderApi := order.NewApi(order.NewService(repository.NewSqlite(*dbPath), pub))
 	paymentGateway := payment.NewPaymentGateway(pub)
 
 	router.POST("order", orderApi.CreateHandler())

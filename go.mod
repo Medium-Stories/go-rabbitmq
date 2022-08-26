@@ -1,6 +1,6 @@
 module github.com/medium-stories/go-rabbitmq
 
-go 1.17
+go 1.19
 
 require (
 	github.com/gin-contrib/cors v1.4.0
@@ -8,7 +8,7 @@ require (
 	github.com/gobackpack/rmq v0.0.0-20220823154855-84bfaf979b8a
 	github.com/google/uuid v1.3.0
 	github.com/sirupsen/logrus v1.9.0
-	google.golang.org/grpc v1.48.0
+	google.golang.org/grpc v1.49.0
 	gorm.io/driver/sqlite v1.3.6
 	gorm.io/gorm v1.23.8
 )

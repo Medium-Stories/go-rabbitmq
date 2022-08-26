@@ -9,8 +9,11 @@ services:
     container_name: medium_gateway
     command:
       - -rmq_host=rabbitmq
+      - -db_path=/db/woohoo_orders.db
     ports:
       - "8000:8000"
+    volumes:
+      - db:/db
     networks:
       - medium
   order:
@@ -21,6 +24,9 @@ services:
     container_name: medium_order
     command:
       - -rmq_host=rabbitmq
+      - -db_path=/db/woohoo_orders.db
+    volumes:
+      - db:/db
     networks:
       - medium
   shipping:
@@ -31,6 +37,8 @@ services:
     container_name: medium_shipping
     command:
       - -rmq_host=rabbitmq
+    volumes:
+      - db:/db
     networks:
       - medium
   rabbitmq:
@@ -41,5 +49,7 @@ services:
       - "15672:15672"
     networks:
       - medium
+volumes:
+  db:
 networks:
   medium:
