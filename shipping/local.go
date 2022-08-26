@@ -5,17 +5,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type local struct {
+type localMethod struct {
 	pub event.Publisher
 }
 
-func NewShippingMethod(pub event.Publisher) *local {
-	return &local{
+func NewShippingMethod(pub event.Publisher) *localMethod {
+	return &localMethod{
 		pub: pub,
 	}
 }
 
-func (loc *local) Ship(orderId string) error {
+func (loc *localMethod) Ship(orderId string) error {
 	logrus.Infof("order id: %s shipped", orderId)
 
 	go func(oId string) {
